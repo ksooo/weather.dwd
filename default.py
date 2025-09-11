@@ -25,12 +25,9 @@ ADDONID = ADDON.getAddonInfo('id')
 LANGUAGE = ADDON.getLocalizedString
 DEBUG = ADDON.getSetting('Debug')
 
-MAXDAYS = 10
 CACHE_LIFETIME = 3  # time in hours after which cache content is discarded
 SHELVE_FILE = xbmcvfs.translatePath(os.path.join(ADDON.getAddonInfo('profile'), 'weather.data'))
 
-TEMP_UNIT = xbmc.getRegion('tempunit')
-SPEED_UNIT = xbmc.getRegion('speedunit')
 DATE_SHORT_FORMAT = xbmc.getRegion('dateshort')
 DATE_LONG_FORMAT = xbmc.getRegion('datelong')
 TIME_FORMAT = xbmc.getRegion('time')
@@ -44,27 +41,6 @@ def set_property(name, value):
 def clear_property(name):
     """Clear all properties."""
     WEATHER_WINDOW.clearProperty(name)
-
-
-def clear():
-    """Reset all properties to default values."""
-    set_property('Current.Condition', 'N/A')
-    set_property('Current.Temperature', '0')
-    set_property('Current.Wind', '0')
-    set_property('Current.WindDirection', 'N/A')
-    set_property('Current.Humidity', '0')
-    set_property('Current.FeelsLike', '0')
-    set_property('Current.UVIndex', '0')
-    set_property('Current.DewPoint', '0')
-    set_property('Current.OutlookIcon', 'na.png')
-    set_property('Current.FanartCode', 'na')
-    for i in range(0, MAXDAYS+1):
-        set_property(f'Day{i}.Title', 'N/A')
-        set_property(f'Day{i}.HighTemp', '0')
-        set_property(f'Day{i}.LowTemp', '0')
-        set_property(f'Day{i}.Outlook', 'N/A')
-        set_property(f'Day{i}.OutlookIcon', 'na.png')
-        set_property(f'Day{i}.FanartCode', 'na')
 
 
 def set_properties_for_weather_data(weather_data):
@@ -170,9 +146,6 @@ def set_properties_for_weather_data(weather_data):
         set_property(f'Hourly.{no1}.Pressure',
                      str(div10(current_data['surfacePressure'][dt.hour])) + ' hPa')
         dt += timedelta(hours=1)
-
-    # TODO: Check more extended labels.
-    # 36Hour.1.xxx - 36Hour.3.xxx, Weekend.1.xxx - Weekend.2.xxx
 
 
 def set_properties_for_alert_data(weather_data):
@@ -300,22 +273,11 @@ def main():
                 if count == location_no:
                     current_station_name = get_station_names()[location_no-1]
                     set_property('Current.Location', current_station_name)
-                    set_property('Forecast.City', current_station_name)
-                    set_property('Forecast.Country', 'Germany')
-                    lat, lon = get_coordinates_for_station(
-                        current_station_name)
-                    set_property('Forecast.Latitude', lat)
-                    set_property('Forecast.Longitude', lon)
             set_property('Locations', len(get_station_names()))
             # set flags
-            set_property('DWD.IsFetched', True)
-            set_property('Forecast.IsFetched', True)
+            set_property('Weather.IsFetched', True)
             set_property('Current.IsFetched', True)
-            set_property('Today.IsFetched', True)
-            set_property('Detailed.IsFetched', True)
             set_property('Daily.IsFetched', True)
-            set_property('Weekend.IsFetched', False)
-            set_property('36Hour.IsFetched', False)
             set_property('Hourly.IsFetched', True)
         except DWDException as e:
             log(f'Could not get weather information: {e}')
