@@ -254,8 +254,8 @@ def main():
     try:
         data_shelf = shelve.open(SHELVE_FILE)
     except FileNotFoundError:
-        log(f"{SHELVE_FILE} doesn't exists, crating path")
-        os.makedirs(SHELVE_FILE)
+        log(f"{SHELVE_FILE} doesn't exists, creating it")
+        os.makedirs(xbmcvfs.translatePath(os.path.join(ADDON.getAddonInfo('profile'))))
         data_shelf = shelve.open(SHELVE_FILE)
 
     if sys.argv[1] == 'find_location':
