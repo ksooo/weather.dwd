@@ -7,6 +7,7 @@ v0.8.0
 - add Hourly.{no} data
 - fixes and cleanup for Current, Day and Daily
 - improve/fix weather condition descriptions in DWD_ICON_MAPPING
+- remove date from Today.Sunrise and Today.Sunset
 v0.7.1
 - fix some syntax errors on python 3.11
 - check addon_data path exists
