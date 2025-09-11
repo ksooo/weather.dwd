@@ -4,6 +4,7 @@ v0.8.0
 - fix missing measurement units for Daily.{no}.WindSpeed, Daily.{no}.HighTemperature and Daily.{no}.LowTemperature
 - fix index for Daily.{no} (index is 1-based)
 - fill only Day0 to Day6 (only 7 days to be provided)
+- add Hourly.{no} data
 v0.7.1
 - fix some syntax errors on python 3.11
 - check addon_data path exists
