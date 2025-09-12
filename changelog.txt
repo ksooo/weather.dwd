@@ -9,6 +9,7 @@ v0.8.0
 - improve/fix weather condition descriptions in DWD_ICON_MAPPING
 - remove date from Today.Sunrise and Today.Sunset
 - fix day icons for weather condition displayed at night
+- remove weather data cache. did not really work, amount of data and fetching frequency does not justify a cache.
 v0.7.1
 - fix some syntax errors on python 3.11
 - check addon_data path exists

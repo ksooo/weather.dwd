@@ -141,16 +141,5 @@
 				</setting>
 			</group>
 		</category>
-		<category id="addon settings" label="32350" help="">
-			<group id="1" label="32350">
-				<setting id="CacheLifetime" type="integer" label="32351" help="">
-					<level>0</level>
-					<default>3</default>
-					<control type="edit" format="integer">
-						<heading>32351</heading>
-					</control>
-				</setting>
-			</group>
-		</category>
 	</section>
 </settings>

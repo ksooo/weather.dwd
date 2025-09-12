@@ -4,7 +4,6 @@ A Kodi Plugin for the German Weather Service (DWD) weather forecasts.
 
 import os
 import sys
-import shelve
 from datetime import datetime
 from datetime import timedelta
 
@@ -24,9 +23,6 @@ ADDON = xbmcaddon.Addon()
 ADDONID = ADDON.getAddonInfo('id')
 LANGUAGE = ADDON.getLocalizedString
 DEBUG = ADDON.getSetting('Debug')
-
-CACHE_LIFETIME = 3  # time in hours after which cache content is discarded
-SHELVE_FILE = xbmcvfs.translatePath(os.path.join(ADDON.getAddonInfo('profile'), 'weather.data'))
 
 DATE_SHORT_FORMAT = xbmc.getRegion('dateshort')
 DATE_LONG_FORMAT = xbmc.getRegion('datelong')
@@ -231,16 +227,6 @@ def main():
     Start the weather addon for Kodi.
     """
     log(f'{ADDON.getAddonInfo("name")} version {ADDON.getAddonInfo("version")} started with argv: {sys.argv}')
-    global CACHE_LIFETIME
-    CACHE_LIFETIME = int(ADDON.getSetting('CacheLifetime'))
-    log(f'Setting cache lifetime to {CACHE_LIFETIME} hours.')
-    try:
-        data_shelf = shelve.open(SHELVE_FILE)
-    except FileNotFoundError:
-        log(f"{SHELVE_FILE} doesn't exists, creating it")
-        os.makedirs(xbmcvfs.translatePath(os.path.join(ADDON.getAddonInfo('profile'))))
-        data_shelf = shelve.open(SHELVE_FILE)
-
     if sys.argv[1] == 'find_location':
         log('find_location: ' + sys.argv[2])
         start_find_location_dialog(sys.argv[2])
@@ -251,19 +237,8 @@ def main():
             lastupdatekey = 'dwd_lastupdate'
             weatherdatakey = 'dwd_weatherdata'
             # get weather data...
-            if lastupdatekey not in data_shelf \
-                    or (datetime.now() - data_shelf[lastupdatekey]) > timedelta(hours=CACHE_LIFETIME):
-                # ...from DWD API if shelved data is stale
-                log(f'Stored weather data is older than {CACHE_LIFETIME} hours!')
-                weather_data = fetch_forecast_data()
-                print(weather_data)
-                log(f'Storing weather data at {datetime.now()} in shelf.')
-                data_shelf[lastupdatekey] = datetime.now()
-                data_shelf[weatherdatakey] = weather_data
-            else:
-                # ...from stored data otherwise
-                log('Getting weather data from shelf.')
-                weather_data = data_shelf[weatherdatakey]
+            weather_data = fetch_forecast_data()
+            print(weather_data)
             # evaluate weather data and set properties for Kodi
             set_properties_for_weather_data(weather_data[location_no])
             set_properties_for_alert_data(weather_data[location_no])
@@ -286,7 +261,6 @@ def main():
             log(f'Could not get weather information: {e}')
     else:
         log('Unsupported command line argument!', xbmc.LOGERROR)
-    data_shelf.close()
 
 
 main()
