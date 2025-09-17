@@ -68,10 +68,10 @@ def set_properties_for_weather_data(weather_data):
     set_property('Current.Pressure', div10(
         current_data['surfacePressure'][0])) # array elem 0 is current hour
     sunrise = calc_time(
-        weather_data['days'][0]['sunrise'], f'{TIME_FORMAT}')
+        weather_data['days'][0]['sunrise'], '%-H:%M')
     set_property('Today.Sunrise', sunrise)
     sunset = calc_time(
-        weather_data['days'][0]['sunset'], f'{TIME_FORMAT}')
+        weather_data['days'][0]['sunset'], '%-H:%M')
     set_property('Today.Sunset', sunset)
     set_property('Current.FanartCode', get_icon_code_for_weather(
         current_data['icon1h'][0], isday)) # array elem 0 is current hour
@@ -95,7 +95,7 @@ def set_properties_for_weather_data(weather_data):
 
         # Day0.xxx - Day6.xxx
         if no < 7:
-            set_property(f'Day{no}.Title', dt.strftime(DATE_SHORT_FORMAT))
+            set_property(f'Day{no}.Title', dt.strftime('%a')) # abbreviated day of week
             set_property(f'Day{no}.HighTemp', div10(day['temperatureMax']))
             set_property(f'Day{no}.LowTemp', div10(day['temperatureMin']))
             set_property(f'Day{no}.Outlook', DWD_ICON_MAPPING[day['icon']])
@@ -106,7 +106,7 @@ def set_properties_for_weather_data(weather_data):
 
         # Daily.1.xxx - Daily.10.xxx
         no1 = no + 1
-        set_property(f'Daily.{no1}.ShortDay', dt.strftime('%a'))
+        set_property(f'Daily.{no1}.ShortDay', dt.strftime('%a')) # abbreviated day of week
         set_property(f'Daily.{no1}.ShortDate', dt.strftime('%d. %b'))
         set_property(f'Daily.{no1}.Outlook', DWD_ICON_MAPPING[day['icon']])
         set_property(f'Daily.{no1}.OutlookIcon',
@@ -129,7 +129,7 @@ def set_properties_for_weather_data(weather_data):
     for no in range(25):
         isday = current_data['isDay'][dt.hour] # array elem 0 is first hour of the current day
         no1 = no + 1
-        set_property(f'Hourly.{no1}.Time', dt.strftime('%H:00'))
+        set_property(f'Hourly.{no1}.Time', dt.strftime('%-H:00'))
         set_property(f'Hourly.{no1}.LongDate', dt.strftime('%d. %B'))
         set_property(f'Hourly.{no1}.ShortDate', dt.strftime('%d. %b'))
         set_property(f'Hourly.{no1}.Outlook',
